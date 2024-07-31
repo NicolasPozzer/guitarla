@@ -6,11 +6,24 @@ import Guitar from "./components/Guitar"
 
 function App() {
 
-  const [data, setData] = useState(db)
-  const [cart, setCart] = useState([])
+  // Esta arrow function revisa si hay algo en local storage para 
+  //mantener la persistencia del carrito al reiniciar la pagina.
+  const initialCart = () => {
+    const localStorageCart = localStorage.getItem('cart')
+    return localStorageCart ? JSON.parse(localStorageCart) : []
+  }
+
+  const [data] = useState(db)
+  const [cart, setCart] = useState(initialCart)
 
   const MAX_ITEMS = 10
   const MIN_ITEMS = 1
+
+  //Esto dice, cada que cart cambie, porque es lo que esta en el arreglo al final,
+  //entonces ejecuta el codigo de adentro.
+  useEffect(() => {
+    localStorage.setItem('cart', JSON.stringify(cart))// 2- Ejecuta esto!
+  }, [cart])// 1- Detecta un cambio en esta linea
 
   // Funcion para agregar al carrito
   function addToCart(item){
@@ -35,7 +48,6 @@ function App() {
       item.quantity = 1
       setCart([...cart, item])
     }
-    
   }
 
   //Eliminar un producto del carrito
@@ -75,6 +87,11 @@ function App() {
   // Vaciar carrito
   function vaciarCarrito(){
     setCart([])
+  }
+
+  // Guardar en local storage con useEffect ya que este actualiza al momento
+  function saveLocalStorage(){
+    
   }
   
 
